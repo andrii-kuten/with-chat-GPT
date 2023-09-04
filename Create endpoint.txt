@@ -1,0 +1,138 @@
+o	Create the endpoint that accepts parameters. Endpoint could accept from 0 to 4 parameters, type string, number, string. Naming is optional. (Swagger is enough here) using .NET platform and C# language 
+o	Make a request to the public REST Countries API using endpoint https://restcountries.com/v3.1/all
+o	Parse retrieved API response data in JSON to variable/object.
+
+Sure, I will guide you step by step to create an endpoint that accepts parameters, makes a request to the REST Countries API, and parses the response data into a variable or object.
+
+
+Step 1: Setting Up Your .NET Project
+Before we start, please make sure that you have a .NET project set up. You can create a new ASP.NET Core project using the following command:
+
+dotnet new webapi -n RestCountriesApi
+
+Navigate to the project directory:
+
+cd RestCountriesApi
+
+
+
+Step 2: Creating the Endpoint
+In your .NET project, you can create an endpoint in a controller. Let's create a new controller named CountriesController. In the CountriesController, create an action method that accepts 0 to 4 parameters (string, number, string):
+
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+
+namespace RestCountriesApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CountriesController : ControllerBase
+    {
+        [HttpGet]
+        public async Task<IActionResult> GetCountries(string param1 = null, int? param2 = null, string param3 = null)
+        {
+            // Logic to fetch and parse data will go here
+
+            return Ok();
+        }
+    }
+}
+
+
+Step 3: Making a Request to the REST Countries API
+To make a request to the REST Countries API, you can use HttpClient. Modify your action method to include the necessary logic to make a request to the API and parse the response data into a variable:
+
+using System.Net.Http;
+using System.Net.Http.Json;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+
+namespace RestCountriesApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CountriesController : ControllerBase
+    {
+        private readonly HttpClient _httpClient;
+
+        public CountriesController(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCountries(string param1 = null, int? param2 = null, string param3 = null)
+        {
+            var response = await _httpClient.GetAsync("https://restcountries.com/v3.1/all");
+            
+            if(response.IsSuccessStatusCode)
+            {
+                var countries = await response.Content.ReadFromJsonAsync<object[]>();
+                return Ok(countries);
+            }
+            else
+            {
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+            }
+        }
+    }
+}
+
+
+In the code above, I've injected HttpClient through the constructor and used it to make a GET request to the REST Countries API. The response is then deserialized to an array of objects.
+
+
+Step 4: Run Your Application
+Run your application using the following command:
+
+dotnet run
+
+You can now test your endpoint by sending a GET request to https://localhost:5001/api/countries.
+
+
+Step 5: Swagger Documentation
+To document your endpoint using Swagger, first install the Swashbuckle.AspNetCore package:
+
+dotnet add package Swashbuckle.AspNetCore
+
+Next, configure Swagger in the Startup.cs file:
+
+
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddControllers();
+    services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "RestCountriesApi", Version = "v1" });
+    });
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestCountriesApi v1"));
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllers();
+    });
+}
+
+
+Now you should have a Swagger documentation page available at https://localhost:5001/swagger.
+
+That's it! You've created an endpoint that accepts parameters, makes a request to a public API, and parses the response data into a variable. You've also documented the endpoint using Swagger. You can now test and verify your API using the Swagger UI or any other API testing tool.
+
+
+
