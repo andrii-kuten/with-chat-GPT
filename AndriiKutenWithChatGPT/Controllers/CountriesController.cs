@@ -19,7 +19,7 @@ namespace RestCountriesApi.Controllers
             }
 
             [HttpGet]
-            public async Task<IActionResult> GetCountries(string country = null, int? param2 = null, string param3 = null)
+            public async Task<IActionResult> GetCountries(string? country = null, int? population = null, string param3 = null)
             {
                 var response = await _httpClient.GetAsync("https://restcountries.com/v3.1/all");
 
@@ -27,14 +27,14 @@ namespace RestCountriesApi.Controllers
                 {
                     var countries = await response.Content.ReadFromJsonAsync<List<Country>>() ?? new List<Country>();
 
-                    if (string.IsNullOrEmpty(country)) 
+                    if (!string.IsNullOrEmpty(country)) 
                     {
-                        return Ok(countries);
+                        countries = Functions.FilterCountries(countries, country);
                     }
 
-                    var filteredCountries = Functions.FilterCountries(countries, country);
-
-                    return Ok(filteredCountries);
+                    countries = Functions.FilterCountriesByPopulation(countries, population);
+                    
+                    return Ok(countries);
                 }
                 else
                 {

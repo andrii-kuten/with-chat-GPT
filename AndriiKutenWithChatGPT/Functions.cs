@@ -17,5 +17,10 @@
 
             return result;
         }
+
+        public static List<Country> FilterCountriesByPopulation(List<Country> countries, double? populationLimit)
+        {
+            return countries.Where(c => !populationLimit.HasValue || c.Population < 1000000*populationLimit).ToList();
+        }
     }
 }

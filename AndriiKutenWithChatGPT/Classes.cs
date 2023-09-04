@@ -10,5 +10,7 @@ namespace AndriiKutenWithChatGPT
     public class Country
     {
         public Name Name { get; set; }
+
+        public double Population { get; set; }
     }
 }

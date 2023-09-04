@@ -1,0 +1,54 @@
+o	Create a function that accepts a number as an attribute and can filter by ` population `. 
+o	The filter should search for countries where the population is less than provided number from attributes in the millions of people (e.g., by providing value `10`, I should find countries with a population less than 10m) using C#
+
+
+To create a function in C# that accepts a number as an attribute and filters countries with a population less than the provided number (in millions), you can follow these steps:
+
+Create a list of countries along with their populations (in millions).
+Use a LINQ query or a loop to filter the countries based on the given population limit.
+Here's a simple example of how you can achieve this:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Country
+{
+    public string Name { get; set; }
+    public double PopulationInMillions { get; set; }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = "Country1", PopulationInMillions = 5.0 },
+            new Country { Name = "Country2", PopulationInMillions = 10.5 },
+            new Country { Name = "Country3", PopulationInMillions = 8.0 },
+            new Country { Name = "Country4", PopulationInMillions = 3.5 }
+        };
+
+        double populationLimit = 10.0; // Set the population limit here
+        FilterCountriesByPopulation(countries, populationLimit);
+    }
+
+    public static void FilterCountriesByPopulation(List<Country> countries, double populationLimit)
+    {
+        var filteredCountries = countries.Where(c => c.PopulationInMillions < populationLimit);
+
+        foreach (var country in filteredCountries)
+        {
+            Console.WriteLine($"Country: {country.Name}, Population: {country.PopulationInMillions} million");
+        }
+    }
+}
+
+
+In this script:
+
+We have created a Country class with properties Name and PopulationInMillions.
+We have created a list of Country objects with hardcoded names and populations.
+We have a function FilterCountriesByPopulation that takes a list of Country objects and a population limit, and filters the countries where the population is less than the provided limit. It then prints out the names and populations of the filtered countries.
+You can modify the populationLimit variable in the Main method to test with different population limits.
