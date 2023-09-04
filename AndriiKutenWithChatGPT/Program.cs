@@ -11,11 +11,9 @@ namespace AndriiKutenWithChatGPT
 
         public static IWebHost BuildWebHost(string[] args)
         {
-            var app = WebHost.CreateDefaultBuilder(args)
+            return WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .Build();
-
-            return app;
         }
     }
 }

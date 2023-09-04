@@ -1,0 +1,190 @@
+o	Create Unit tests for all 4 functions (filter, filter, sort, pagination) created earlier.
+
+        public static List<Country> FilterCountries(List<Country> countries, string query)
+        {
+            query = query.ToLower();
+            List<Country> result = new List<Country>();
+
+            foreach (var country in countries)
+            {
+                if (country.Name.Common.ToLower().Contains(query))
+                {
+                    result.Add(country);
+                }
+            }
+
+            return result;
+        }
+
+        public static List<Country> FilterCountriesByPopulation(List<Country> countries, double? populationLimit)
+        {
+            return countries.Where(c => !populationLimit.HasValue || c.Population < 1000000*populationLimit).ToList();
+        }
+
+        public static void SortCountries(List<Country> countries, string sortAttribute)
+        {
+            if (sortAttribute.ToLower() == "ascend")
+            {
+                countries.Sort((x, y) => string.Compare(x.Name.Common, y.Name.Common));
+            }
+            else if (sortAttribute.ToLower() == "descend")
+            {
+                countries.Sort((x, y) => string.Compare(y.Name.Common, x.Name.Common));
+            }
+            else
+            {
+                throw new Exception("Invalid sort attribute. Please use 'ascend' or 'descend'.");
+            }
+        }
+
+        public static List<Country> GetPaginatedCountries(List<Country> countries, int limit)
+        {
+            if (limit < 1)
+            {
+                throw new ArgumentException("The limit should be at least 1");
+            }
+            
+            return countries.Count > limit ? countries.Take(limit).ToList() : countries;
+        }
+
+
+Certainly! When creating unit tests for these methods, you'll want to test various cases including valid inputs, boundary conditions, and invalid inputs. Here's how you can create unit tests for each method in your C# class. For simplicity, I'll use the MSTest framework to create the unit tests.
+
+Before creating the tests, it is assumed that you have a Country class defined as follows:
+
+
+public class Country
+{
+    public NameInfo Name { get; set; }
+    public double Population { get; set; }
+}
+
+public class NameInfo
+{
+    public string Common { get; set; }
+}
+
+
+You can create unit tests for the methods as follows:
+
+
+[TestClass]
+public class CountryMethodsTests
+{
+    [TestMethod]
+    public void TestFilterCountries()
+    {
+        // Arrange
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = new NameInfo { Common = "India" }, Population = 1393409038 },
+            new Country { Name = new NameInfo { Common = "Australia" }, Population = 25687041 }
+        };
+        string query = "au";
+
+        // Act
+        var result = YourClassName.FilterCountries(countries, query);
+
+        // Assert
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Australia", result[0].Name.Common);
+    }
+
+    [TestMethod]
+    public void TestFilterCountriesByPopulation()
+    {
+        // Arrange
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = new NameInfo { Common = "India" }, Population = 1393409038 },
+            new Country { Name = new NameInfo { Common = "Australia" }, Population = 25687041 }
+        };
+        double? populationLimit = 500; // 500 million
+
+        // Act
+        var result = YourClassName.FilterCountriesByPopulation(countries, populationLimit);
+
+        // Assert
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual("Australia", result[0].Name.Common);
+    }
+
+    [TestMethod]
+    public void TestSortCountries()
+    {
+        // Arrange
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = new NameInfo { Common = "India" }, Population = 1393409038 },
+            new Country { Name = new NameInfo { Common = "Australia" }, Population = 25687041 }
+        };
+        string sortAttribute = "descend";
+
+        // Act
+        YourClassName.SortCountries(countries, sortAttribute);
+
+        // Assert
+        Assert.AreEqual("India", countries[0].Name.Common);
+        Assert.AreEqual("Australia", countries[1].Name.Common);
+    }
+
+    [TestMethod]
+    public void TestGetPaginatedCountries()
+    {
+        // Arrange
+        List<Country> countries = new List<Country>
+        {
+            new Country { Name = new NameInfo { Common = "India" }, Population = 1393409038 },
+            new Country { Name = new NameInfo { Common = "Australia" }, Population = 25687041 },
+            new Country { Name = new NameInfo { Common = "USA" }, Population = 331893745 }
+        };
+        int limit = 2;
+
+        // Act
+        var result = YourClassName.GetPaginatedCountries(countries, limit);
+
+        // Assert
+        Assert.AreEqual(2, result.Count);
+    }
+}
+
+
+In these test methods:
+
+We first create a list of Country objects as test data (Arrange).
+We call the method to be tested with the test data and store the result (Act).
+We then assert that the result matches our expectations (Assert).
+Remember to replace YourClassName with the actual name of your class containing these methods. You should also create additional test methods to cover more cases, including testing for exceptions using [ExpectedException(typeof(Exception))] attribute if necessary.
+
+
+
+My unit tests can't be run
+
+If your unit tests cannot be run, it could be due to a variety of reasons including setup issues, syntax errors, or incorrect configurations. Here's how you can troubleshoot the issue:
+
+Step 1: Setup Check
+Project Setup - Ensure that you have set up a Test Project and have added necessary references to your project where the classes are defined.
+
+Framework Compatibility - Ensure that you are using a compatible testing framework (like MSTest, NUnit, xUnit, etc.) and that your project is correctly referencing it.
+
+Test Method Attributes - Make sure each test method is marked with the correct attribute such as [TestMethod] (for MSTest) to identify them as test methods.
+
+Build Errors - Check if there are any build errors in your solution. Sometimes, tests cannot run due to build errors.
+
+
+Step 2: Syntax Check
+Class Definitions - Make sure that the Country and NameInfo classes are correctly defined and accessible from the test project.
+
+Method Signatures - Ensure the method signatures in your tests match the method signatures in your class where the methods are defined.
+
+Step 3: Configuration Check
+Test Runner - Ensure that your test runner (like Test Explorer in Visual Studio) is functioning correctly and able to discover tests. You may need to rebuild your solution for the test runner to discover new tests.
+
+Namespace Import - Ensure that necessary namespaces are imported in your test class file, including the namespace where your methods and classes (Country, NameInfo) are defined.
+
+Step 4: Detailed Error Analysis
+Error Messages - If there are specific error messages when you try to run the tests, analyze them to find clues about what might be going wrong.
+
+Logs and Output - Check any logs or output windows for messages that might give more information on why the tests can't run.
+
+If you follow these steps and still encounter issues, please provide more detailed information about the errors or issues you are facing, and I can give more specific advice.
