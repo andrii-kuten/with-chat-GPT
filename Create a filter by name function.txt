@@ -1,0 +1,61 @@
+o	Create a function that accepts a string as a parameter and can filter by country `name/common`.  
+o	The filter should search for countries names that contains string from attributes (e.g. providing `st` as attribute I could find `Estonia`, providing `Sp` I could find `Spain`) using C#
+o	search should be case insensitive (e.g., providing `sT` should find `Estonia`) 
+
+
+Here's a C# function which accomplishes this. This function uses a JSON array of country data which you would need to replace with the actual JSON array of country data.
+
+using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+
+public class Program
+{
+    public static void Main()
+    {
+        string jsonString = "[{\"name\":{\"common\":\"Estonia\"}},{\"name\":{\"common\":\"Spain\"}},{\"name\":{\"common\":\"Australia\"}}]"; // Replace with your actual JSON array
+        List<Country> countries = JsonConvert.DeserializeObject<List<Country>>(jsonString);
+
+        foreach (var country in FilterCountries(countries, "st"))
+        {
+            Console.WriteLine(country.Name.Common);
+        }
+    }
+
+    public static List<Country> FilterCountries(List<Country> countries, string query)
+    {
+        query = query.ToLower();
+        List<Country> result = new List<Country>();
+
+        foreach (var country in countries)
+        {
+            if (country.Name.Common.ToLower().Contains(query))
+            {
+                result.Add(country);
+            }
+        }
+
+        return result;
+    }
+
+    public class Country
+    {
+        public Name Name { get; set; }
+    }
+
+    public class Name
+    {
+        public string Common { get; set; }
+    }
+}
+
+
+
+To use this function:
+
+Replace string jsonString = "[{\"name\":{\"common\":\"Estonia\"}},{\"name\":{\"common\":\"Spain\"}},{\"name\":{\"common\":\"Australia\"}}]"; with your actual JSON array of country data.
+Call the FilterCountries method with the list of Country objects and the query string as parameters.
+It will return a list of Country objects that have the query string in their common name (case insensitive).
+Note: This example uses Newtonsoft.Json for JSON deserialization, you might need to install it via NuGet Package Manager with Install-Package Newtonsoft.Json -Version 13.0.1.
+
+
