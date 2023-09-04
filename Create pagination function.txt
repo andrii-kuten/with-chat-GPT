@@ -1,0 +1,59 @@
+o	Create a function that accepts numbers as an attribute and can limit the number of records. 
+o	The functionality should accept a number and retrieve first n records (e.g., providing number `15` I should receive 15 first records from API). Please do this using C#
+
+
+Creating a function in C# to retrieve the first n records from an API involves using HttpClient to send a GET request to the API. Here is a sample function which you can include in a C# console application or any other type of C# project:
+csharp
+
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+public class Program
+{
+    public static async Task Main(string[] args)
+    {
+        try
+        {
+            var records = await GetRecordsAsync(15);
+            foreach (var record in records)
+            {
+                Console.WriteLine(record);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+
+    public static async Task<string[]> GetRecordsAsync(int limit)
+    {
+        if (limit < 1)
+        {
+            throw new ArgumentException("The limit should be at least 1");
+        }
+
+        using var httpClient = new HttpClient();
+        var response = await httpClient.GetStringAsync($"https://api.yourwebsite.com/endpoint?limit={limit}");
+
+        // Assuming the API returns a JSON array of strings. Adjust the deserialization as necessary based on the API's response format.
+        var records = Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(response);
+        
+        return records.Length > limit ? records.Take(limit).ToArray() : records;
+    }
+}
+
+
+In the above code:
+
+We create an async method named GetRecordsAsync that accepts a limit as a parameter.
+We use HttpClient to send a GET request to the API with the limit as a query parameter (replace 'https://api.yourwebsite.com/endpoint' with the actual API endpoint).
+We deserialize the response JSON into a string array (assuming the API returns a JSON array of strings, adjust as necessary based on the API response format).
+We return the first n records using Take(limit).
+The Main method demonstrates how to call GetRecordsAsync and print the records.
+You would need to install the Newtonsoft.Json package for JSON deserialization, which you can do via NuGet Package Manager or by using the following command in the Package Manager Console:
+
+Install-Package Newtonsoft.Json
+
+Remember to replace 'https://api.yourwebsite.com/endpoint' with the actual API endpoint and adjust the deserialization based on the API's response format.

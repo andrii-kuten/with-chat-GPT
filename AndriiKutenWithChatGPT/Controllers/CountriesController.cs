@@ -19,7 +19,7 @@ namespace RestCountriesApi.Controllers
             }
 
             [HttpGet]
-            public async Task<IActionResult> GetCountries(string? country = null, int? population = null, string sortOrder = "ascend")
+            public async Task<IActionResult> GetCountries(string? country = null, int? population = null, string sortOrder = "ascend", int? limit = null)
             {
                 var response = await _httpClient.GetAsync("https://restcountries.com/v3.1/all");
 
@@ -35,6 +35,11 @@ namespace RestCountriesApi.Controllers
                     countries = Functions.FilterCountriesByPopulation(countries, population);
 
                     Functions.SortCountries(countries, sortOrder);
+
+                    if (limit.HasValue) 
+                    {
+                        countries = Functions.GetPaginatedCountries(countries, limit.Value);
+                    }
 
                     return Ok(countries);
                 }

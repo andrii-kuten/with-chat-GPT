@@ -38,5 +38,15 @@
                 throw new Exception("Invalid sort attribute. Please use 'ascend' or 'descend'.");
             }
         }
+
+        public static List<Country> GetPaginatedCountries(List<Country> countries, int limit)
+        {
+            if (limit < 1)
+            {
+                throw new ArgumentException("The limit should be at least 1");
+            }
+            
+            return countries.Count > limit ? countries.Take(limit).ToList() : countries;
+        }
     }
 }
