@@ -1,0 +1,56 @@
+o	Create a function that accepts a string as an attribute and can sort data by ` name/common `. 
+o	The sort should accept string ` ascend or descend ` and sort countries name by provided attribute (e.g. providing attribute ascend all countries should be sorted from A to Z) using C#
+
+
+Certainly! You can create a function in C# that accepts a string as an input and sorts a list of countries by the common name either in ascending or descending order depending on the input string ("ascend" or "descend"). Here's an example function that implements this:
+
+using System;
+using System.Collections.Generic;
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        List<string> countries = new List<string>
+        {
+            "United States",
+            "Canada",
+            "Australia",
+            "United Kingdom",
+            "Germany",
+            "France",
+            "Spain"
+        };
+
+        string sortAttribute = "descend";
+        SortCountries(countries, sortAttribute);
+        foreach (var country in countries)
+        {
+            Console.WriteLine(country);
+        }
+    }
+
+    public static void SortCountries(List<string> countries, string sortAttribute)
+    {
+        if (sortAttribute.ToLower() == "ascend")
+        {
+            countries.Sort((x, y) => string.Compare(x, y));
+        }
+        else if (sortAttribute.ToLower() == "descend")
+        {
+            countries.Sort((x, y) => string.Compare(y, x));
+        }
+        else
+        {
+            Console.WriteLine("Invalid sort attribute. Please use 'ascend' or 'descend'.");
+        }
+    }
+}
+
+Explanation of the code:
+
+We have a List<string> that contains a list of country names.
+We call the SortCountries function with the list of countries and the sort attribute as inputs.
+Inside the SortCountries function, we use the List.Sort method with a custom comparison function that sorts the list either in ascending or descending order depending on the sort attribute.
+We then print the sorted list of countries in the Main method.
+You can change the sort attribute to "ascend" or "descend" and run the program to see the list sorted in the respective order.

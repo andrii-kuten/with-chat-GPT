@@ -22,5 +22,21 @@
         {
             return countries.Where(c => !populationLimit.HasValue || c.Population < 1000000*populationLimit).ToList();
         }
+
+        public static void SortCountries(List<Country> countries, string sortAttribute)
+        {
+            if (sortAttribute.ToLower() == "ascend")
+            {
+                countries.Sort((x, y) => string.Compare(x.Name.Common, y.Name.Common));
+            }
+            else if (sortAttribute.ToLower() == "descend")
+            {
+                countries.Sort((x, y) => string.Compare(y.Name.Common, x.Name.Common));
+            }
+            else
+            {
+                throw new Exception("Invalid sort attribute. Please use 'ascend' or 'descend'.");
+            }
+        }
     }
 }
